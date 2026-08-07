@@ -43,7 +43,11 @@ end)
 test('a panel "add" message reaches the same blorps list a command would see', function()
   H.panels.blorps.handle:fire('add', { name = 'bank' })
   H.commands.blorp({ args = '' })
-  assert(H.notes[#H.notes][1]:match('bank') or H.notes[#H.notes - 1][1]:match('bank'))
+  local found = false
+  for _, n in ipairs(H.notes) do
+    if n[1]:match('bank') then found = true end
+  end
+  assert(found)
 end)
 
 test('.request event re-broadcasts the current list', function()

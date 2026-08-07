@@ -33,6 +33,7 @@ local function to_wire(data)
 end
 
 local function broadcast()
+  if not (state and panel) then return end
   local payload = { blorps = to_wire(load_data()) }
   events.emit(EVENT_BLORPS, payload)
   panel:post("blorps_list", payload)

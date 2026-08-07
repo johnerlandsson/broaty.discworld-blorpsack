@@ -7,7 +7,9 @@ registering blorps and telling other plugins where they are.
 
 ## Commands
 
-Commands use Mallard's client command prefix — `/` by default.
+Commands use Mallard's client command prefix — `/` by default. Blorps are
+stored per character, so a fresh character starts with an empty list even
+on the same account and world.
 
 ```
 /blorp                  — list all registered blorps

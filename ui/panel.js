@@ -66,3 +66,5 @@ $addForm.addEventListener("submit", (e) => {
 });
 
 renderRoom();
+
+panel.post("ready", {});
