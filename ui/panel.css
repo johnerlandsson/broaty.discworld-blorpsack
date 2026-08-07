@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  padding: 8px;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  color: #ddd;
+  background: #1e1e1e;
+}
+
+.room {
+  margin-bottom: 8px;
+  color: #888;
+}
+
+#room-id.unknown {
+  color: #ff6666;
+}
+
+ul#list {
+  list-style: none;
+  margin: 0 0 8px 0;
+  padding: 0;
+}
+
+ul#list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #333;
+}
+
+ul#list li .name {
+  font-weight: 600;
+}
+
+ul#list li .room-id {
+  color: #888;
+  margin-left: 8px;
+  flex: 1;
+}
+
+ul#list li button.remove {
+  background: none;
+  border: 1px solid #663333;
+  color: #ff9999;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.empty {
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.add-form {
+  display: flex;
+  gap: 4px;
+}
+
+.add-form input {
+  flex: 1;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #ddd;
+  padding: 4px 6px;
+  border-radius: 3px;
+}
+
+.add-form button {
+  background: #335533;
+  border: 1px solid #557755;
+  color: #aaffaa;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 4px 10px;
+}
+
+.add-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
