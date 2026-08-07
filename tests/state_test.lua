@@ -62,4 +62,21 @@ test('world connect reseeds current_room/current_room_name from gmcp.get', funct
   assert(state.current_room_name == 'Somewhere')
 end)
 
+test('room.info gmcp event with the same id but a newly-known name updates current_room_name and re-posts', function()
+  H.fire_gmcp('room.info', { identifier = 'r10' })
+  assert(state.current_room == 'r10')
+  assert(state.current_room_name == nil)
+  local before = #panel_posts
+  H.fire_gmcp('room.info', { identifier = 'r10', name = 'The Late Room' })
+  assert(state.current_room_name == 'The Late Room')
+  assert(#panel_posts == before + 1)
+  assert(panel_posts[#panel_posts].data.room_name == 'The Late Room')
+end)
+
+test('an empty-string room name normalizes to nil', function()
+  H.fire_gmcp('room.info', { identifier = 'r11', name = '' })
+  assert(state.current_room == 'r11')
+  assert(state.current_room_name == nil)
+end)
+
 print(string.format('\n%d tests passed.', passed))

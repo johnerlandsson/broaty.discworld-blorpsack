@@ -26,7 +26,7 @@ end
 -- Each stored entry is normally { room_id = ..., room_name = ... }. Older
 -- entries written before room_name existed are a plain room_id string —
 -- read as room_id with room_name = nil rather than migrated.
-local function to_wire(data)
+local function decorate_entries(data)
   local list = {}
   for name, entry in pairs(data) do
     local room_id, room_name
@@ -41,14 +41,21 @@ local function to_wire(data)
   return list
 end
 
-local function broadcast()
-  if not (state and panel) then return end
-  local list = to_wire(load_data())
+-- The cross-plugin wire contract: room_id and blorp name only. Never add
+-- fields here without checking whether the documented broadcast payload
+-- shape is allowed to change.
+local function to_wire(list)
   local wire = {}
   for _, b in ipairs(list) do
     wire[#wire + 1] = { room_id = b.room_id, name = b.name }
   end
-  events.emit(EVENT_BLORPS, { blorps = wire })
+  return wire
+end
+
+local function broadcast()
+  if not (state and panel) then return end
+  local list = decorate_entries(load_data())
+  events.emit(EVENT_BLORPS, { blorps = to_wire(list) })
   panel:post("blorps_list", { blorps = list })
 end
 
@@ -58,7 +65,7 @@ function M.init(deps)
 end
 
 function M.list()
-  return to_wire(load_data())
+  return decorate_entries(load_data())
 end
 
 function M.add(name)

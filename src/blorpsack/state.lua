@@ -20,8 +20,12 @@ local function post_room_changed()
 end
 
 local function apply_room(identifier, name)
-  if identifier and identifier ~= M.current_room then
-    M.current_room = identifier
+  if name == '' then name = nil end
+  if not identifier then return end
+  if identifier ~= M.current_room then
+    M.current_room, M.current_room_name = identifier, name
+    post_room_changed()
+  elseif name and name ~= M.current_room_name then
     M.current_room_name = name
     post_room_changed()
   end

@@ -41,6 +41,7 @@ end)
 
 test('list reflects a legacy plain-room_id entry with room_name nil', function()
   local list = blorps.list()
+  assert(#list == 2)
   assert(list[1].name == 'armoury')
   assert(list[1].room_id == 'r0')
   assert(list[1].room_name == nil)
