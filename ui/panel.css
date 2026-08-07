@@ -1,19 +1,19 @@
 body {
   margin: 0;
   padding: 8px;
-  font-family: system-ui, sans-serif;
-  font-size: 13px;
-  color: #ddd;
-  background: #1e1e1e;
+  font-family: var(--mallard-font-sans);
+  font-size: var(--mallard-font-size);
+  color: var(--mallard-fg);
+  background: var(--mallard-bg);
 }
 
 .room {
   margin-bottom: 8px;
-  color: #888;
+  color: var(--mallard-fg-muted);
 }
 
 #room-name.unknown {
-  color: #ff6666;
+  color: var(--mallard-danger);
 }
 
 ul#list {
@@ -27,7 +27,7 @@ ul#list li {
   justify-content: space-between;
   align-items: center;
   padding: 4px 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--mallard-border);
 }
 
 ul#list li .name {
@@ -35,22 +35,22 @@ ul#list li .name {
 }
 
 ul#list li .room-name {
-  color: #888;
+  color: var(--mallard-fg-muted);
   margin-left: 8px;
   flex: 1;
 }
 
 ul#list li button.remove {
   background: none;
-  border: 1px solid #663333;
-  color: #ff9999;
+  border: 1px solid var(--mallard-danger);
+  color: var(--mallard-danger);
   border-radius: 3px;
   cursor: pointer;
   padding: 2px 6px;
 }
 
 .empty {
-  color: #888;
+  color: var(--mallard-fg-muted);
   margin-bottom: 8px;
 }
 
@@ -61,17 +61,17 @@ ul#list li button.remove {
 
 .add-form input {
   flex: 1;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  color: #ddd;
+  background: var(--mallard-bg-input);
+  border: 1px solid var(--mallard-border);
+  color: var(--mallard-fg);
   padding: 4px 6px;
   border-radius: 3px;
 }
 
 .add-form button {
-  background: #335533;
-  border: 1px solid #557755;
-  color: #aaffaa;
+  background: var(--mallard-accent);
+  border: 0;
+  color: var(--mallard-accent-fg);
   border-radius: 3px;
   cursor: pointer;
   padding: 4px 10px;
