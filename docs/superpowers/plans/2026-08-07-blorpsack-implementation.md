@@ -93,6 +93,7 @@ default_size = { width = 280, height = 320 }
 ```
 node_modules/
 *.mallardx
+.superpowers/
 ```
 
 - [ ] **Step 3: Verify the files exist**
