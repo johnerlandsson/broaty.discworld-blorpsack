@@ -1,19 +1,19 @@
 body {
   margin: 0;
   padding: 8px;
-  font-family: var(--mallard-font-sans);
-  font-size: var(--mallard-font-size);
-  color: var(--mallard-fg);
-  background: var(--mallard-bg);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  color: var(--fg);
+  background: var(--bg);
 }
 
 .room {
   margin-bottom: 8px;
-  color: var(--mallard-fg-muted);
+  color: var(--fg-muted);
 }
 
 #room-name.unknown {
-  color: var(--mallard-danger);
+  color: var(--error-fg);
 }
 
 ul#list {
@@ -27,7 +27,7 @@ ul#list li {
   justify-content: space-between;
   align-items: center;
   padding: 4px 0;
-  border-bottom: 1px solid var(--mallard-border);
+  border-bottom: 1px solid var(--border);
 }
 
 ul#list li .name {
@@ -35,22 +35,22 @@ ul#list li .name {
 }
 
 ul#list li .room-name {
-  color: var(--mallard-fg-muted);
+  color: var(--fg-muted);
   margin-left: 8px;
   flex: 1;
 }
 
 ul#list li button.remove {
   background: none;
-  border: 1px solid var(--mallard-danger);
-  color: var(--mallard-danger);
+  border: 1px solid var(--error-fg);
+  color: var(--error-fg);
   border-radius: 3px;
   cursor: pointer;
   padding: 2px 6px;
 }
 
 .empty {
-  color: var(--mallard-fg-muted);
+  color: var(--fg-muted);
   margin-bottom: 8px;
 }
 
@@ -61,17 +61,17 @@ ul#list li button.remove {
 
 .add-form input {
   flex: 1;
-  background: var(--mallard-bg-input);
-  border: 1px solid var(--mallard-border);
-  color: var(--mallard-fg);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--fg);
   padding: 4px 6px;
   border-radius: 3px;
 }
 
 .add-form button {
-  background: var(--mallard-accent);
+  background: var(--accent);
   border: 0;
-  color: var(--mallard-accent-fg);
+  color: var(--accent-fg);
   border-radius: 3px;
   cursor: pointer;
   padding: 4px 10px;
