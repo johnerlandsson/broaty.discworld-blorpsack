@@ -5,20 +5,24 @@
 -- event can actually fire.
 
 local M = {
-  current_room = nil,
-  char_name    = nil,
+  current_room      = nil,
+  current_room_name = nil,
+  char_name         = nil,
 }
 
 -- injected via M.init(); panel is panel_mod.panel — the mud.panel() handle
 local panel
 
 local function post_room_changed()
-  if panel then panel:post("room_changed", { room_id = M.current_room }) end
+  if panel then
+    panel:post("room_changed", { room_id = M.current_room, room_name = M.current_room_name })
+  end
 end
 
-local function apply_room(identifier)
+local function apply_room(identifier, name)
   if identifier and identifier ~= M.current_room then
     M.current_room = identifier
+    M.current_room_name = name
     post_room_changed()
   end
 end
@@ -32,7 +36,7 @@ end
 local function seed_room()
   local raw = gmcp.get("room.info")
   if raw then
-    apply_room(raw:match('"identifier"%s*:%s*"([^"]+)"'))
+    apply_room(raw:match('"identifier"%s*:%s*"([^"]+)"'), raw:match('"name"%s*:%s*"([^"]*)"'))
   end
 end
 
@@ -44,7 +48,7 @@ function M.init(deps)
 end
 
 gmcp.on('room.info', function(_, data)
-  if type(data) == 'table' then apply_room(data.identifier) end
+  if type(data) == 'table' then apply_room(data.identifier, data.name) end
 end)
 
 gmcp.on('char.info', function(_, data)
