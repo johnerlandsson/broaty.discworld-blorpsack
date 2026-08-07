@@ -22,9 +22,9 @@ silently — that's how you re-register a blorp after recasting it
 somewhere new.
 
 ```
-/blorp add market        Registered blorp "market" at r12345.
+/blorp add market        Registered blorp "market" at The Mended Drum.
 /blorp                   Blorps:
-                            market               r12345
+                            market               The Mended Drum
 /blorp rm market          Removed blorp "market".
 ```
 

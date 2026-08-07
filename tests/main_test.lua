@@ -19,18 +19,20 @@ local function test(name, fn)
 end
 
 test('main wires a room.info GMCP event through to a successful /blorp add', function()
-  H.fire_gmcp('room.info', { identifier = 'r1' })
+  H.fire_gmcp('room.info', { identifier = 'r1', name = 'Market Square' })
   H.commands.blorp({ args = 'add market' })
 
   assert(#H.event_emits == 1)
   assert(H.event_emits[1].name == 'broaty.discworld-blorpsack.blorps')
   assert(H.event_emits[1].data.blorps[1].name == 'market')
+  assert(H.event_emits[1].data.blorps[1].room_name == nil)
 
   local panel_posts = H.panels.blorps.posts
   assert(panel_posts[#panel_posts].name == 'blorps_list')
   assert(panel_posts[#panel_posts].data.blorps[1].room_id == 'r1')
+  assert(panel_posts[#panel_posts].data.blorps[1].room_name == 'Market Square')
 
-  assert(H.notes[#H.notes][1]:match('Registered blorp "market" at r1'))
+  assert(H.notes[#H.notes][1]:match('Registered blorp "market" at Market Square'))
 end)
 
 test('a panel "ready" message reflects the room the command already saw', function()
@@ -38,6 +40,7 @@ test('a panel "ready" message reflects the room the command already saw', functi
   local panel_posts = H.panels.blorps.posts
   assert(panel_posts[#panel_posts].name == 'room_changed')
   assert(panel_posts[#panel_posts].data.room_id == 'r1')
+  assert(panel_posts[#panel_posts].data.room_name == 'Market Square')
 end)
 
 test('a panel "add" message reaches the same blorps list a command would see', function()
@@ -50,13 +53,16 @@ test('a panel "add" message reaches the same blorps list a command would see', f
   assert(found)
 end)
 
-test('.request event re-broadcasts the current list', function()
+test('.request event re-broadcasts the current list, still without room_name', function()
   local before = #H.event_emits
   H.fire_event('broaty.discworld-blorpsack.blorps.request', {})
   assert(#H.event_emits == before + 1)
   local emitted = H.event_emits[#H.event_emits]
   local names = {}
-  for _, b in ipairs(emitted.data.blorps) do names[b.name] = true end
+  for _, b in ipairs(emitted.data.blorps) do
+    names[b.name] = true
+    assert(b.room_name == nil)
+  end
   assert(names.market == true)
   assert(names.bank == true)
 end)
