@@ -18,7 +18,7 @@ end
 
 M.panel:on_message("ready", function()
   M.panel:post("blorps_list", { blorps = blorps.list() })
-  M.panel:post("room_changed", { room_id = state.current_room })
+  M.panel:post("room_changed", { room_id = state.current_room, room_name = state.current_room_name })
 end)
 
 M.panel:on_message("add", function(data)
