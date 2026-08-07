@@ -23,10 +23,19 @@ local function save_data(data)
   storage.set(key(), data)
 end
 
+-- Each stored entry is normally { room_id = ..., room_name = ... }. Older
+-- entries written before room_name existed are a plain room_id string —
+-- read as room_id with room_name = nil rather than migrated.
 local function to_wire(data)
   local list = {}
-  for name, room_id in pairs(data) do
-    list[#list + 1] = { room_id = room_id, name = name }
+  for name, entry in pairs(data) do
+    local room_id, room_name
+    if type(entry) == 'table' then
+      room_id, room_name = entry.room_id, entry.room_name
+    else
+      room_id = entry
+    end
+    list[#list + 1] = { room_id = room_id, name = name, room_name = room_name }
   end
   table.sort(list, function(a, b) return a.name < b.name end)
   return list
@@ -34,9 +43,13 @@ end
 
 local function broadcast()
   if not (state and panel) then return end
-  local payload = { blorps = to_wire(load_data()) }
-  events.emit(EVENT_BLORPS, payload)
-  panel:post("blorps_list", payload)
+  local list = to_wire(load_data())
+  local wire = {}
+  for _, b in ipairs(list) do
+    wire[#wire + 1] = { room_id = b.room_id, name = b.name }
+  end
+  events.emit(EVENT_BLORPS, { blorps = wire })
+  panel:post("blorps_list", { blorps = list })
 end
 
 function M.init(deps)
@@ -56,7 +69,7 @@ function M.add(name)
     return false, "Current room unknown. Move through a mapped room first."
   end
   local data = load_data()
-  data[name] = state.current_room
+  data[name] = { room_id = state.current_room, room_name = state.current_room_name }
   save_data(data)
   broadcast()
   return true

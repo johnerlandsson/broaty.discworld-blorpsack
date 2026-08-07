@@ -5,7 +5,7 @@ local fake_host = require('support.fake_host')
 local H = fake_host.install()
 
 local panel_handle, panel_posts = fake_host.new_panel('blorps')
-local state  = { current_room = nil, char_name = nil }
+local state  = { current_room = nil, current_room_name = nil, char_name = nil }
 local blorps = require('blorpsack.blorps')
 blorps.init({ state = state, panel = { panel = panel_handle } })
 
@@ -39,6 +39,7 @@ end)
 
 test('add on a fresh name creates an entry and broadcasts once', function()
   state.current_room = 'r1'
+  state.current_room_name = 'Market Square'
   local ok = blorps.add('market')
   assert(ok == true)
   assert(#H.event_emits == 1)
@@ -49,20 +50,34 @@ test('add on a fresh name creates an entry and broadcasts once', function()
   assert(#panel_posts == 1)
   assert(panel_posts[1].name == 'blorps_list')
   assert(panel_posts[1].data.blorps[1].room_id == 'r1')
+  assert(panel_posts[1].data.blorps[1].room_name == 'Market Square')
 end)
 
-test('add on an existing name overwrites the room id and broadcasts', function()
+test('the cross-plugin broadcast excludes room_name; the panel post includes it', function()
+  local emitted_blorp = H.event_emits[#H.event_emits].data.blorps[1]
+  assert(emitted_blorp.room_id ~= nil)
+  assert(emitted_blorp.name ~= nil)
+  assert(emitted_blorp.room_name == nil)
+
+  local posted_blorp = panel_posts[#panel_posts].data.blorps[1]
+  assert(posted_blorp.room_name == 'Market Square')
+end)
+
+test('add on an existing name overwrites the room id/name and broadcasts', function()
   state.current_room = 'r2'
+  state.current_room_name = 'The Mended Drum'
   local ok = blorps.add('market')
   assert(ok == true)
   assert(#H.event_emits == 2)
   local list = blorps.list()
   assert(#list == 1)
   assert(list[1].room_id == 'r2')
+  assert(list[1].room_name == 'The Mended Drum')
 end)
 
 test('list returns entries sorted by name', function()
   state.current_room = 'r3'
+  state.current_room_name = 'The Bank'
   blorps.add('bank')
   local list = blorps.list()
   assert(#list == 2)
@@ -91,11 +106,13 @@ end)
 test('storage keying changes when char_name becomes known', function()
   state.char_name = 'Dilbo'
   state.current_room = 'r4'
+  state.current_room_name = 'The Armoury'
   blorps.add('bank2')
   assert(H.storage_data['blorps_Dilbo'] ~= nil)
-  assert(H.storage_data['blorps_Dilbo'].bank2 == 'r4')
+  assert(H.storage_data['blorps_Dilbo'].bank2.room_id == 'r4')
+  assert(H.storage_data['blorps_Dilbo'].bank2.room_name == 'The Armoury')
   -- the earlier, pre-char_name entry is untouched under the fallback key
-  assert(H.storage_data['blorps'].market == 'r2')
+  assert(H.storage_data['blorps'].market.room_id == 'r2')
 end)
 
 test('.request event triggers a broadcast reflecting the current key, without mutating storage', function()
