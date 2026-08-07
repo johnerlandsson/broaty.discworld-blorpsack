@@ -1,20 +1,21 @@
-const $roomId    = document.getElementById("room-id");
+const $roomName  = document.getElementById("room-name");
 const $list      = document.getElementById("list");
 const $empty     = document.getElementById("empty");
 const $addForm   = document.getElementById("add-form");
 const $addName   = document.getElementById("add-name");
 const $addButton = document.getElementById("add-button");
 
-let currentRoomId = null;
+let currentRoomId   = null;
+let currentRoomName = null;
 
 function renderRoom() {
   if (currentRoomId) {
-    $roomId.textContent = currentRoomId;
-    $roomId.classList.remove("unknown");
+    $roomName.textContent = currentRoomName || currentRoomId;
+    $roomName.classList.remove("unknown");
     $addButton.disabled = false;
   } else {
-    $roomId.textContent = "unknown";
-    $roomId.classList.add("unknown");
+    $roomName.textContent = "unknown";
+    $roomName.classList.add("unknown");
     $addButton.disabled = true;
   }
 }
@@ -33,9 +34,9 @@ function renderList(blorps) {
     name.className = "name";
     name.textContent = b.name;
 
-    const roomId = document.createElement("span");
-    roomId.className = "room-id";
-    roomId.textContent = b.room_id;
+    const roomName = document.createElement("span");
+    roomName.className = "room-name";
+    roomName.textContent = b.room_name || "(unknown room)";
 
     const remove = document.createElement("button");
     remove.className = "remove";
@@ -44,7 +45,7 @@ function renderList(blorps) {
     remove.addEventListener("click", () => panel.post("remove", { name: b.name }));
 
     li.appendChild(name);
-    li.appendChild(roomId);
+    li.appendChild(roomName);
     li.appendChild(remove);
     $list.appendChild(li);
   }
@@ -54,6 +55,7 @@ panel.on("blorps_list", (frame) => renderList(frame.blorps || []));
 
 panel.on("room_changed", (frame) => {
   currentRoomId = frame.room_id || null;
+  currentRoomName = frame.room_name || null;
   renderRoom();
 });
 
