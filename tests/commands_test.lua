@@ -6,7 +6,7 @@ local H = fake_host.install()
 
 local colors = require('blorpsack.colors')
 local panel_handle = fake_host.new_panel('blorps')
-local state  = { current_room = nil, char_name = nil }
+local state  = { current_room = nil, current_room_name = nil, char_name = nil }
 local blorps = require('blorpsack.blorps')
 blorps.init({ state = state, panel = { panel = panel_handle } })
 
@@ -49,22 +49,47 @@ test('/blorp add with no name prints usage', function()
   assert(last_note():match('Usage: /blorp'))
 end)
 
-test('/blorp add <name> registers a blorp at the current room', function()
+test('/blorp add <name> registers a blorp and shows the room name', function()
   state.current_room = 'r1'
+  state.current_room_name = 'Market Square'
   invoke('add market')
-  assert(last_note():match('Registered blorp "market" at r1'))
+  assert(last_note():match('Registered blorp "market" at Market Square'))
   assert(#blorps.list() == 1)
 end)
 
-test('bare /blorp lists registered blorps', function()
+test('/blorp add falls back to the raw room id when the room name is unknown', function()
+  state.current_room = 'r5'
+  state.current_room_name = nil
+  invoke('add bank')
+  assert(last_note():match('Registered blorp "bank" at r5'))
+  state.current_room = 'r1'
+  state.current_room_name = 'Market Square'
+end)
+
+test('bare /blorp lists registered blorps by room name', function()
   invoke('')
-  assert(last_note():match('market'))
+  local found_market = false
+  for _, n in ipairs(H.notes) do
+    if n[1]:match('market') and n[1]:match('Market Square') then found_market = true end
+  end
+  assert(found_market)
+end)
+
+test('bare /blorp shows "(unknown room)" for a legacy entry with no stored name', function()
+  local data = H.storage_data['blorps']
+  data['old'] = 'r99'  -- legacy plain-room_id shape, no room_name
+  invoke('')
+  local found = false
+  for _, n in ipairs(H.notes) do
+    if n[1]:match('old') and n[1]:match('%(unknown room%)') then found = true end
+  end
+  assert(found)
 end)
 
 test('/blorp rm <name> removes a blorp', function()
   invoke('rm market')
   assert(last_note():match('Removed blorp "market"'))
-  assert(#blorps.list() == 0)
+  assert(#blorps.list() == 2)
 end)
 
 test('/blorp rm <name> on an unknown name errors', function()

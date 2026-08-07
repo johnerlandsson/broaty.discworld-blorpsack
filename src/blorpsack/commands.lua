@@ -20,7 +20,7 @@ local function print_list()
   end
   note('  Blorps:', C.header)
   for _, b in ipairs(list) do
-    note(string.format('  %-20s %s', b.name, b.room_id), C.alt)
+    note(string.format('  %-20s %s', b.name, b.room_name or '(unknown room)'), C.alt)
   end
 end
 
@@ -36,7 +36,7 @@ mud.command("blorp", function(m)
   if add_name then
     local ok, err = blorps.add(add_name)
     if ok then
-      note(string.format('  Registered blorp "%s" at %s.', add_name, tostring(state.current_room)), C.ok)
+      note(string.format('  Registered blorp "%s" at %s.', add_name, state.current_room_name or tostring(state.current_room)), C.ok)
     else
       note('  ' .. err, C.err)
     end
