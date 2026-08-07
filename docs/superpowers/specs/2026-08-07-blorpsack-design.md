@@ -125,9 +125,12 @@ so event names are namespaced with the plugin id to avoid colliding with
 other plugins' event names, following the precedent set by
 `discworld-group-shields`' `net.mallard.discworld.shield.up` events.
 
-- **`broaty.discworld-blorpsack.blorps`** — the broadcast. Emitted:
-  - once at plugin load, after hydrating from storage;
-  - after every successful `/blorp add` or `/blorp rm`.
+- **`broaty.discworld-blorpsack.blorps`** — the broadcast. Emitted only
+  after every successful `/blorp add` or `/blorp rm`, and in response to
+  a `.request` (below). Blorpsack does **not** broadcast on its own
+  plugin load — it still hydrates its in-memory list from `storage` at
+  load, for its own commands to use, but emits nothing until asked or
+  until a mutation happens.
 
   Payload:
   ```lua
@@ -135,15 +138,16 @@ other plugins' event names, following the precedent set by
   ```
 
 - **`broaty.discworld-blorpsack.blorps.request`** — blorpsack listens
-  for this and immediately re-emits the full `...blorps` broadcast
-  above. This exists because blorpsack and cowtography are independent
-  plugins with independent install/enable/reload lifecycles — load
-  order between them is not guaranteed. A consumer that loads (or
-  reloads) *after* blorpsack already did its startup broadcast would
-  otherwise miss the initial list. By emitting `.request` once on its
-  own load, a consumer is guaranteed a fresh copy regardless of which
-  plugin started first. Payload is ignored (any table, including
-  `{}`, is fine).
+  for this and immediately emits the full `...blorps` broadcast above.
+  This is how a consumer gets the initial list: since blorpsack and
+  cowtography are independent plugins with independent
+  install/enable/reload lifecycles, there is no reliable "blorpsack has
+  just loaded" moment for a consumer to hook. Instead the consumer is
+  responsible for asking — e.g. cowtography waits a short delay after
+  its own load (giving blorpsack's own load a chance to finish first)
+  and then emits `.request` — rather than blorpsack broadcasting
+  unprompted at a time no one may be listening yet. Payload is ignored
+  (any table, including `{}`, is fine).
 
 Every `add`/`rm` mutation broadcasts the full current list
 unconditionally on success — no diffing against the previous state —
@@ -191,5 +195,7 @@ Coverage to include:
 - `rm` on an unknown name errors and does not broadcast.
 - Storage keying changes correctly when `char_name` becomes known
   (falls back to `'blorps'` before, `'blorps_<name>'` after).
-- `.request` triggers a re-emit of the current list without mutating
+- Plugin load hydrates the in-memory list from storage but emits no
+  broadcast.
+- `.request` triggers an emit of the current list without mutating
   storage.
