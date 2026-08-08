@@ -9,8 +9,10 @@
   <div class="header">Blorps (<span id="count">0</span>)</div>
   <div class="room">Room: <span id="room-name" class="unknown">unknown</span></div>
   <input id="filter" class="filter" type="text" placeholder="Filter…" autocomplete="off">
-  <ul id="list"></ul>
-  <div id="empty" class="empty" hidden>No blorps registered.</div>
+  <div class="list-wrap">
+    <ul id="list"></ul>
+    <div id="empty" class="empty" hidden>No blorps registered.</div>
+  </div>
   <form id="add-form" class="add-form">
     <input id="add-name" type="text" placeholder="Blorp name" autocomplete="off">
     <button id="add-button" type="submit" disabled>Add</button>

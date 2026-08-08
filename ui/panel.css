@@ -1,6 +1,13 @@
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 8px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-family);
   font-size: var(--font-size);
   color: var(--fg);
@@ -8,17 +15,20 @@ body {
 }
 
 .header {
+  flex-shrink: 0;
   font-weight: 600;
   margin-bottom: 4px;
   color: var(--fg);
 }
 
 .room {
+  flex-shrink: 0;
   margin-bottom: 8px;
   color: var(--fg-muted);
 }
 
 .filter {
+  flex-shrink: 0;
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -34,9 +44,16 @@ body {
   color: var(--error-fg);
 }
 
+.list-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
 ul#list {
   list-style: none;
-  margin: 0 0 8px 0;
+  margin: 0;
   padding: 0;
 }
 
@@ -69,10 +86,10 @@ ul#list li button.remove {
 
 .empty {
   color: var(--fg-muted);
-  margin-bottom: 8px;
 }
 
 .add-form {
+  flex-shrink: 0;
   display: flex;
   gap: 4px;
 }
