@@ -1,10 +1,10 @@
 {
   "name": "discworld-blorpsack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Mallard plugin: tracks Discworld blorps and broadcasts the list for other plugins to route to.",
   "scripts": {
     "test": "lua tests/fake_host_test.lua && lua tests/state_test.lua && lua tests/blorps_init_test.lua && lua tests/blorps_test.lua && lua tests/commands_test.lua && lua tests/panel_test.lua && lua tests/main_test.lua",
-    "pack": "rm -f discworld-blorpsack-0.1.0.mallardx && zip -r discworld-blorpsack-0.1.0.mallardx plugin.toml README.md src/ ui/"
+    "pack": "rm -f discworld-blorpsack-0.1.1.mallardx && zip -r discworld-blorpsack-0.1.1.mallardx plugin.toml README.md src/ ui/"
   }
 }

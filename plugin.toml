@@ -1,6 +1,6 @@
 id                  = "broaty.discworld-blorpsack"
 name                = "Discworld Blorpsack"
-version             = "0.1.0"
+version             = "0.1.1"
 description         = "Tracks blorps (location-remembering jewellery) in your inventory and broadcasts the list for other plugins to route to."
 language            = "lua"
 entry               = "src/main.lua"
