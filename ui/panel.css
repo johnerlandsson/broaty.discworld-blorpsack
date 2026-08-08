@@ -7,9 +7,27 @@ body {
   background: var(--bg);
 }
 
+.header {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--fg);
+}
+
 .room {
   margin-bottom: 8px;
   color: var(--fg-muted);
+}
+
+.filter {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 4px 6px;
+  border-radius: 3px;
 }
 
 #room-name.unknown {
