@@ -49,6 +49,7 @@ body {
   min-height: 0;
   overflow-y: auto;
   margin-bottom: 8px;
+  padding-right: 6px;
 }
 
 ul#list {
