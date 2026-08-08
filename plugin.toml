@@ -15,6 +15,9 @@ match = ["discworld.starturtle.net:*"]
 [permissions]
 gmcp_access = ["room.info", "char.info", "char.info.capname"]
 
+[gmcp]
+advertise = ["room.info 1", "char.info 1"]
+
 [panels.blorps]
 title        = "Blorpsack"
 entry        = "ui/panel.html"
