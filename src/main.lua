@@ -12,7 +12,7 @@ local panel    = require('blorpsack.panel')
 local blorps   = require('blorpsack.blorps')
 local commands = require('blorpsack.commands')
 
-state.init({ panel = panel })
+state.init({ panel = panel, blorps = blorps })
 blorps.init({ state = state, panel = panel })
 panel.init({ colors = colors, state = state, blorps = blorps })
 commands.init({ colors = colors, state = state, blorps = blorps })

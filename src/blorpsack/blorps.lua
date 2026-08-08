@@ -68,6 +68,13 @@ function M.list()
   return decorate_entries(load_data())
 end
 
+-- Re-broadcasts under whatever storage key is current right now. Exists
+-- for state.lua to call when char_name resolves after something already
+-- read/broadcast under the old (fallback) key.
+function M.refresh()
+  broadcast()
+end
+
 function M.add(name)
   if type(name) ~= 'string' or name == '' then
     return false, "Blorp name required."

@@ -6,10 +6,18 @@ local H = fake_host.install()
 
 local panel_handle, panel_posts = fake_host.new_panel('blorps')
 
+-- Stub blorps: state.lua's job is calling blorps.refresh() at the right
+-- moment (when char_name actually changes), not re-testing blorps.lua's
+-- own broadcast logic (covered in blorps_test.lua).
+local refresh_calls = 0
+local stub_blorps = {
+  refresh = function() refresh_calls = refresh_calls + 1 end,
+}
+
 H.gmcp_values['char.info.capname'] = 'Dilbo'
 
 local state = require('blorpsack.state')
-state.init({ panel = { panel = panel_handle } })
+state.init({ panel = { panel = panel_handle }, blorps = stub_blorps })
 
 local passed = 0
 local function test(name, fn)
@@ -23,8 +31,9 @@ local function test(name, fn)
   end
 end
 
-test('init hydrates char_name from gmcp.get', function()
+test('init hydrates char_name from gmcp.get and calls blorps.refresh()', function()
   assert(state.char_name == 'Dilbo')
+  assert(refresh_calls == 1)
 end)
 
 test('room.info gmcp event sets current_room/current_room_name and posts room_changed', function()
@@ -53,6 +62,19 @@ end)
 test('char.info gmcp event updates char_name', function()
   H.fire_gmcp('char.info', { capname = 'Rincewind' })
   assert(state.char_name == 'Rincewind')
+end)
+
+test('char.info gmcp event with a newly-known name calls blorps.refresh()', function()
+  refresh_calls = 0
+  H.fire_gmcp('char.info', { capname = 'Vetinari' })
+  assert(state.char_name == 'Vetinari')
+  assert(refresh_calls == 1)
+end)
+
+test('char.info gmcp event with the same name again does not call blorps.refresh()', function()
+  refresh_calls = 0
+  H.fire_gmcp('char.info', { capname = 'Vetinari' })
+  assert(refresh_calls == 0)
 end)
 
 test('world connect reseeds current_room/current_room_name from gmcp.get', function()

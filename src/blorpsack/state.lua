@@ -11,7 +11,7 @@ local M = {
 }
 
 -- injected via M.init(); panel is panel_mod.panel — the mud.panel() handle
-local panel
+local panel, blorps
 
 local function post_room_changed()
   if panel then
@@ -31,9 +31,17 @@ local function apply_room(identifier, name)
   end
 end
 
+-- blorps.lua's storage key is derived from char_name (see its `key()`),
+-- which only resolves once Discworld's char.info GMCP frame arrives —
+-- sometime after connect, not synchronously at plugin load. If anything
+-- already read blorps.list()/broadcast() before that (e.g. the panel's
+-- one-time "ready" handshake), it saw the wrong (fallback) key's data
+-- and nothing would ever correct it without this refresh.
 local function apply_char_name(name)
-  if type(name) == 'string' and name ~= '' then
+  if type(name) ~= 'string' or name == '' then return end
+  if name ~= M.char_name then
     M.char_name = name
+    if blorps then blorps.refresh() end
   end
 end
 
@@ -46,6 +54,7 @@ end
 
 function M.init(deps)
   panel = deps.panel.panel
+  blorps = deps.blorps
   seed_room()
   world.on("connect", seed_room)
   apply_char_name(gmcp.get('char.info.capname'))
